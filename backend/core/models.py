@@ -1,8 +1,10 @@
+import uuid
+
 from django.db import models
 
 
 class VesselType(models.Model):
-    id = models.UUIDField(primary_key=True, null=False, unique=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, unique=True, editable=False)
     type = models.CharField(max_length=50, null=False, verbose_name='Тип')
 
     def __str__(self):
@@ -14,7 +16,7 @@ class VesselType(models.Model):
 
 
 class VesselBuild(models.Model):
-    id = models.UUIDField(primary_key=True, null=False, unique=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, unique=True, editable=False)
     year = models.IntegerField(null=False, verbose_name='Год')
 
     def __str__(self):
@@ -26,7 +28,7 @@ class VesselBuild(models.Model):
 
 
 class VesselFlag(models.Model):
-    id = models.UUIDField(primary_key=True, null=False, unique=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, unique=True, editable=False)
     flag = models.CharField(max_length=50, null=False, verbose_name='Флаг')
 
     def __str__(self):
@@ -59,11 +61,11 @@ class Vessel(models.Model):
 
 
 class PortCountry(models.Model):
-    id = models.UUIDField(primary_key=True, null=False, unique=True)
-    name = models.CharField(max_length=50, null=False, verbose_name='Страна')
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, unique=True, editable=False)
+    country = models.CharField(max_length=50, null=False, verbose_name='Страна')
 
     def __str__(self):
-        return self.name
+        return self.country
 
     class Meta:
         verbose_name_plural = 'Страны'
@@ -71,7 +73,7 @@ class PortCountry(models.Model):
 
 
 class Port(models.Model):
-    id = models.UUIDField(primary_key=True, null=False, unique=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, unique=True, editable=False)
     country = models.ForeignKey(PortCountry, on_delete=models.PROTECT, null=False, verbose_name='Страна')
     name = models.CharField(max_length=50, null=False, verbose_name='Название')
     type = models.CharField(max_length=15, null=False, verbose_name='Тип')
@@ -87,7 +89,7 @@ class Port(models.Model):
 
 
 class Route(models.Model):
-    id = models.UUIDField(primary_key=True, null=False, unique=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, unique=True, editable=False)
     departure_port = models.ForeignKey(Port, on_delete=models.PROTECT, null=False, related_name='dep_port',
                                        verbose_name='Порт отправления')
     destination_port = models.ForeignKey(Port, on_delete=models.PROTECT, null=False, related_name='dest_port',
@@ -102,7 +104,7 @@ class Route(models.Model):
 
 
 class Date(models.Model):
-    id = models.UUIDField(primary_key=True, null=False, unique=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, null=False, unique=True, editable=False)
     minute = models.IntegerField(null=False, verbose_name='Минуты')
     hour = models.IntegerField(null=False, verbose_name='Часы')
     weekday = models.CharField(max_length=15, null=False, verbose_name='День недели')
@@ -120,7 +122,7 @@ class Date(models.Model):
 
 
 class Voyage(models.Model):
-    id = models.UUIDField(primary_key=True, null=False, unique=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4,  null=False, unique=True, editable=False)
     route = models.ForeignKey(Route, on_delete=models.PROTECT, null=False, verbose_name='Маршрут')
     mmsi = models.ForeignKey(Vessel, on_delete=models.PROTECT, null=False, verbose_name='MMSI')
     departure_date = models.ForeignKey(Date, on_delete=models.PROTECT, null=False, related_name='dep_date',
