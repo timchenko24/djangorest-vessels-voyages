@@ -48,7 +48,7 @@ class DateSerializer(ModelSerializer):
     class Meta:
         model = Date
         fields = ('__all__')
-        
+
 
 class VoyageSerializer(ModelSerializer):
     class Meta:
