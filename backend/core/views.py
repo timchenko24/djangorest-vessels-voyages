@@ -15,6 +15,8 @@ class VesselTypeViewSet(ModelViewSet):
 
         if self.action == 'list':
             permission_classes = [AllowAny]
+        elif self.action == 'retrieve':
+            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
@@ -27,6 +29,8 @@ class VesselBuildViewSet(ModelViewSet):
     def get_permissions(self):
 
         if self.action == 'list':
+            permission_classes = [AllowAny]
+        elif self.action == 'retrieve':
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
@@ -41,6 +45,8 @@ class VesselFlagViewSet(ModelViewSet):
 
         if self.action == 'list':
             permission_classes = [AllowAny]
+        elif self.action == 'retrieve':
+            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
@@ -53,6 +59,8 @@ class VesselViewSet(ModelViewSet):
     def get_permissions(self):
 
         if self.action == 'list':
+            permission_classes = [AllowAny]
+        elif self.action == 'retrieve':
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
@@ -67,6 +75,8 @@ class PortCountryViewSet(ModelViewSet):
 
         if self.action == 'list':
             permission_classes = [AllowAny]
+        elif self.action == 'retrieve':
+            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
@@ -79,6 +89,8 @@ class PortViewSet(ModelViewSet):
     def get_permissions(self):
 
         if self.action == 'list':
+            permission_classes = [AllowAny]
+        elif self.action == 'retrieve':
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
@@ -93,6 +105,8 @@ class RouteViewSet(ModelViewSet):
 
         if self.action == 'list':
             permission_classes = [AllowAny]
+        elif self.action == 'retrieve':
+            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
@@ -106,6 +120,8 @@ class DateViewSet(ModelViewSet):
 
         if self.action == 'list':
             permission_classes = [AllowAny]
+        elif self.action == 'retrieve':
+            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
@@ -118,6 +134,8 @@ class VoyageViewSet(ModelViewSet):
     def get_permissions(self):
 
         if self.action == 'list':
+            permission_classes = [AllowAny]
+        elif self.action == 'retrieve':
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
