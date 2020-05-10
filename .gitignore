@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 frontend/node_modules/
 .idea/
 *.pyc
 *.iml
+=======
+
+*.xml
+*.py___jb_tmp___
+>>>>>>> dev
