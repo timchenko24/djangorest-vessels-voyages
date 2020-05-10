@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar
       app
-      color="indigo darken-1"
+      color="#587796"
       dark
     >
       <v-toolbar-title>Рейсы</v-toolbar-title>
