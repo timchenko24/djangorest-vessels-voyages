@@ -7,11 +7,17 @@
       cols="12"
       :sm="division"
     >
-      <Card :title="item.title" :index="(index+1)">
+      <Card :index="(index+1)">
 
         <template v-slot:img>
 
           <slot name="img" :path="item"></slot>
+
+        </template>
+
+        <template v-slot:title>
+
+          <slot name="title" :path="item"></slot>
 
         </template>
 
