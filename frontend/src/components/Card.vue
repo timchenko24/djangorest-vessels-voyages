@@ -11,9 +11,11 @@
 
       <slot name="img"></slot>
 
-      <v-card-title>
-        {{ title }}
-      </v-card-title>
+      <slot name="title">
+        <v-card-title>
+          {{ title }}
+        </v-card-title>
+      </slot>
 
       <slot name="content">
         <v-card-text>
@@ -31,9 +33,6 @@ export default {
   name: 'Card',
 
   props: {
-    title: {
-      type: String,
-    },
     index: {
       type: [Number, String],
     },
@@ -42,6 +41,7 @@ export default {
   data: () => ({
     text: 'Lorem ipsum dolor sit amet, id quo eruditi eloquentiam. Assum decore\n'
               + 'te sed. Elitr scripta ocurreret qui ad.',
+    title: 'Test',
   }),
 };
 </script>
