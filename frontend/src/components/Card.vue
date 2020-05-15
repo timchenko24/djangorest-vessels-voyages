@@ -5,7 +5,7 @@
   >
 
     <v-card
-      class="mx-auto justify-center h-100"
+      class="mx-auto justify-center"
       :elevation="hover ? 12 : 4"
     >
 
