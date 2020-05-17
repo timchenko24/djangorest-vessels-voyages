@@ -11,19 +11,19 @@
 
         <template v-slot:img>
 
-          <slot name="img" :path="item"></slot>
+          <slot name="img" :item="item"></slot>
 
         </template>
 
         <template v-slot:title>
 
-          <slot name="title" :path="item"></slot>
+          <slot name="title" :item="item"></slot>
 
         </template>
 
         <template v-slot:content>
 
-          <slot name="content" :path="item"></slot>
+          <slot name="content" :item="item"></slot>
 
         </template>
 
