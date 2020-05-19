@@ -42,7 +42,7 @@ export default {
   components: { Card },
   props: {
     items: {
-      type: Object,
+      type: Array,
       required: true,
     },
     division: {
