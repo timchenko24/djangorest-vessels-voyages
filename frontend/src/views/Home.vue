@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+ <v-container fluid>
     <v-row cols="12">
       <v-flex>
         <v-card
@@ -33,7 +33,7 @@
       <template v-slot:img="imgScope">
 
         <v-img class="text-center pa-4">
-          <v-icon size="50" color="#FBA846">{{ imgScope.path.icon }}</v-icon>
+          <v-icon size="50" color="#FBA846">{{ imgScope.item.icon }}</v-icon>
         </v-img>
 
       </template>
@@ -41,7 +41,7 @@
       <template v-slot:title="titleScope">
 
         <v-card-title>
-          {{ titleScope.path.title }}
+          {{ titleScope.item.title }}
         </v-card-title>
 
       </template>
@@ -49,7 +49,7 @@
       <template v-slot:content="contentScope">
 
         <v-card-text>
-          {{ contentScope.path.text }}
+          {{ contentScope.item.text }}
         </v-card-text>
 
       </template>
@@ -57,6 +57,7 @@
     </CardList>
 
   </v-container>
+
 </template>
 
 <script>
