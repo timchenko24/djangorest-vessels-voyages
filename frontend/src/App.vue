@@ -32,7 +32,7 @@
       <v-card
         flat
         tile
-        class="white--text text-center"
+        class="white--text text-center w-100"
         color="#587796"
       >
         <v-card-text>
