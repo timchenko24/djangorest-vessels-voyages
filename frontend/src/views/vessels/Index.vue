@@ -12,7 +12,13 @@
       </v-progress-linear>
     </div>
 
-    <CardList :items="wholeResponse" :division="4">
+    <h1 class="display-3 text-center pt-10">Суда</h1>
+    <hr/>
+
+    <MultiSelect @onAbort="abortSelect" @onChange="updItems" label='Тип судна' :filterBy="types">
+    </MultiSelect>
+
+    <CardList :items="filter ? filteredVessels : vessels" :division="4">
 
       <template v-slot:img="imgScope">
 
@@ -47,42 +53,70 @@
 import axios from 'axios';
 import CardList from '../../components/CardList.vue';
 import Tile from '../../components/Tile.vue';
+import MultiSelect from '../../components/MultiSelect.vue';
 
 export default {
 
   name: 'Index',
-  components: { CardList, Tile },
+  components: { MultiSelect, CardList, Tile },
+
   data() {
     return {
-      wholeResponse: [],
+      vessels: [],
+      selectedTypes: [],
+      types: [],
       loading: true,
+      filter: false,
       titles: ['Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип'],
     };
   },
+
   methods: {
-    getData() {
+
+    async getData() {
       const path = 'http://127.0.0.1:8000/api/vessel/';
-      axios.get(path).then((res) => {
-        this.wholeResponse = res.data;
-        this.loading = false;
-      })
-        .catch((error) => {
-          console.error(error);
-        });
+      const wholeResponse = await axios.get(path);
+      this.loading = false;
+      this.vessels = wholeResponse.data;
+
+      const temp = new Set();
+      this.vessels.forEach((v) => temp.add(v.type));
+      this.types = Array.from(temp);
     },
+
     getImgURL(path) {
       // eslint-disable-next-line import/no-dynamic-require
       return require(`../../assets/vessels/${path}.jpg`);
     },
+
     getVesselInf() {
       this.wholeResponse.map((e) => {
         e.mmsi = { ...e.mmsi, title: 'closed' };
         return e;
       });
     },
+
+    updItems(val) {
+      this.selectedTypes = val;
+      this.filter = true;
+    },
+
+    abortSelect(val) {
+      this.filter = val;
+    },
+
   },
-  async created() {
-    this.getData();
+
+  computed: {
+
+    filteredVessels() {
+      return this.vessels.filter((v) => this.selectedTypes.includes(v.type));
+    },
+
+  },
+
+  async mounted() {
+    await this.getData();
   },
 };
 </script>
