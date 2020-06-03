@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
-import Index from '../views/vessels/Index.vue';
 
 Vue.use(VueRouter);
 
@@ -9,12 +7,17 @@ const routes = [
   {
     path: '',
     name: 'Home',
-    component: Home,
+    component: () => import('../views/Home.vue'),
   },
   {
     path: '/vessels',
-    name: 'Index',
-    component: Index,
+    name: 'VesselIndex',
+    component: () => import('../views/vessels/Index.vue'),
+  },
+  {
+    path: '/ports',
+    name: 'PortIndex',
+    component: () => import('../views/ports/Index.vue'),
   },
 ];
 
