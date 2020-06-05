@@ -41,7 +41,7 @@
 
       <template v-slot:title="titleScope">
 
-        <router-link :to="titleScope.item.path">
+        <router-link :to="titleScope.item.path" class="black--text">
 
           <v-card-title>
             {{ titleScope.item.title }}
