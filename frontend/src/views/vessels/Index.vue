@@ -2,15 +2,7 @@
 
   <v-container fluid>
 
-    <div v-if="loading" class="text-xs-center">
-      <v-progress-linear
-        indeterminate
-        height="8"
-        absolute
-        top
-        color="#FBA846">
-      </v-progress-linear>
-    </div>
+    <LinearProgress :height="6" color="#FBA846" :loading="loading"></LinearProgress>
 
     <h1 class="display-3 text-center pt-10">Суда</h1>
     <hr/>
@@ -18,12 +10,12 @@
     <MultiSelect @onAbort="abortSelect" @onChange="updItems" label='Тип судна' :filterBy="types">
     </MultiSelect>
 
-    <CardList :items="filter ? filteredVessels : vessels" :division="4">
+    <CardList :items="filter ? filteredVessels : titledVessels" :division="4">
 
       <template v-slot:img="imgScope">
 
-        <v-img class="text-center pa-4" max-height="190" :src="getImgURL(imgScope.item.mmsi)"
-          :alt="'imgScope.item.mmsi'">
+        <v-img class="text-center pa-4" max-height="190" :src="getImgURL(imgScope.item.mmsi.value)"
+          :alt="'imgScope.item.mmsi.value'">
         </v-img>
 
       </template>
@@ -31,7 +23,9 @@
       <template v-slot:title="titleScope">
 
           <v-card-title class="font-weight-black indigo lighten-5">
-            {{ titleScope.item.name }}
+
+            {{ titleScope.item.name.value }}
+
           </v-card-title>
 
         </template>
@@ -54,11 +48,16 @@ import axios from 'axios';
 import CardList from '../../components/CardList.vue';
 import Tile from '../../components/Tile.vue';
 import MultiSelect from '../../components/MultiSelect.vue';
+import LinearProgress from '../../components/LinearProgress.vue';
+import titler from '../../components/mixins/titler';
 
 export default {
 
   name: 'Index',
-  components: { MultiSelect, CardList, Tile },
+  components: {
+    MultiSelect, CardList, Tile, LinearProgress,
+  },
+  mixins: [titler],
 
   data() {
     return {
@@ -67,7 +66,9 @@ export default {
       types: [],
       loading: true,
       filter: false,
-      titles: ['Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип', 'Тип'],
+      titledVessels: [],
+      titles: ['MMSI', 'Тип', 'Флаг', 'Год постройки', 'Название', 'IMO', 'Позывной',
+        'Длина', 'Ширина', 'Грузоподъемность', 'Дедвейт'],
     };
   },
 
@@ -89,13 +90,6 @@ export default {
       return require(`../../assets/vessels/${path}.jpg`);
     },
 
-    getVesselInf() {
-      this.wholeResponse.map((e) => {
-        e.mmsi = { ...e.mmsi, title: 'closed' };
-        return e;
-      });
-    },
-
     updItems(val) {
       this.selectedTypes = val;
       this.filter = true;
@@ -110,13 +104,14 @@ export default {
   computed: {
 
     filteredVessels() {
-      return this.vessels.filter((v) => this.selectedTypes.includes(v.type));
+      return this.titledVessels.filter((v) => this.selectedTypes.includes(v.type.value));
     },
 
   },
 
   async mounted() {
     await this.getData();
+    this.titledVessels = this.setTitles(this.vessels, this.titles, []);
   },
 };
 </script>
