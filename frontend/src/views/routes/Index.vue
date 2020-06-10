@@ -1,23 +1,20 @@
 <template>
   <v-container fluid fill-height ref="chartdiv" class="py-5">
-    <div v-if="loading" class="text-xs-center">
-      <v-progress-linear
-        indeterminate
-        height="8"
-        absolute
-        top
-        color="#FBA846">
-      </v-progress-linear>
-    </div>
+
+    <LinearProgress :height="6" color="#FBA846" :loading="loading"></LinearProgress>
+
   </v-container>
 </template>
 
 <script>
 import axios from 'axios';
+import LinearProgress from '../../components/LinearProgress.vue';
 import worldMap from '../../components/mixins/worldMap';
 
 export default {
   name: 'Index',
+  components: { LinearProgress },
+  mixins: [worldMap],
 
   data() {
     return {
@@ -27,8 +24,6 @@ export default {
       loading: true,
     };
   },
-
-  mixins: [worldMap],
 
   methods: {
     async getData() {
