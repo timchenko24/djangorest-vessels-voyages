@@ -4,7 +4,7 @@
 
     <v-layout wrap>
 
-      <template v-for="(item, key, index) in items">
+      <template v-for="(item, index) in items">
 
         <v-flex :key="index" class="w-50">
 
@@ -14,14 +14,15 @@
             tile
           >
             <slot name="title" :item="item">
-              <v-card-title class="pa-0 justify-content-center">
-                {{key}}
+              <v-card-title class="pa-0 justify-content-center text-center
+                                   subtitle-1 font-weight-medium">
+                {{ item.title.value }}
               </v-card-title>
             </slot>
 
             <slot name="content" :item="item">
-              <v-card-text class="pa-0 text-center">
-                {{ item }}
+              <v-card-text class="pa-0 text-center body-1">
+                {{ item.value }}
               </v-card-text>
             </slot>
 
@@ -44,7 +45,6 @@ export default {
     items: {
       type: Object,
       required: true,
-
     },
   },
 };
