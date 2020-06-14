@@ -24,6 +24,12 @@ const routes = [
     name: 'RouteIndex',
     component: () => import('../views/routes/Index.vue'),
   },
+  {
+    path: '/voyages',
+    name: 'VoyageIndex',
+    component: () => import('../views/voyages/Index.vue'),
+  },
+
 ];
 
 const router = new VueRouter({
