@@ -1,19 +1,40 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
+    path: '',
     name: 'Home',
-    component: Home,
+    component: () => import('../views/Home.vue'),
   },
+  {
+    path: '/vessels',
+    name: 'VesselIndex',
+    component: () => import('../views/vessels/Index.vue'),
+  },
+  {
+    path: '/ports',
+    name: 'PortIndex',
+    component: () => import('../views/ports/Index.vue'),
+  },
+  {
+    path: '/routes',
+    name: 'RouteIndex',
+    component: () => import('../views/routes/Index.vue'),
+  },
+  {
+    path: '/voyages',
+    name: 'VoyageIndex',
+    component: () => import('../views/voyages/Index.vue'),
+  },
+
 ];
 
 const router = new VueRouter({
   routes,
+  mode: 'history',
 });
 
 export default router;

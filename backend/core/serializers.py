@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from core.models import *
 
 
@@ -21,6 +22,10 @@ class VesselFlagSerializer(ModelSerializer):
 
 
 class VesselSerializer(ModelSerializer):
+    type = serializers.StringRelatedField()
+    flag = serializers.StringRelatedField()
+    build = serializers.StringRelatedField()
+
     class Meta:
         model = Vessel
         fields = ('__all__')
@@ -33,12 +38,17 @@ class PortCountrySerializer(ModelSerializer):
 
 
 class PortSerializer(ModelSerializer):
+    country = serializers.StringRelatedField()
+
     class Meta:
         model = Port
         fields = ('__all__')
 
 
 class RouteSerializer(ModelSerializer):
+    departure_port = serializers.StringRelatedField()
+    destination_port = serializers.StringRelatedField()
+
     class Meta:
         model = Route
         fields = ('__all__')
@@ -51,6 +61,11 @@ class DateSerializer(ModelSerializer):
 
 
 class VoyageSerializer(ModelSerializer):
+    route = serializers.StringRelatedField()
+    mmsi = serializers.StringRelatedField()
+    departure_date = serializers.StringRelatedField()
+    arrival_date = serializers.StringRelatedField()
+
     class Meta:
         model = Voyage
         fields = ('__all__')
