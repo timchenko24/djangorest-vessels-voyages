@@ -4,8 +4,7 @@
     <v-col
       v-for="(item, index) in items"
       :key="index"
-      cols="12"
-      :sm="division"
+      :md="division"
     >
       <Card :index="(index+1)">
 

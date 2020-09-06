@@ -2,6 +2,8 @@ from django.http import JsonResponse
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.viewsets import ModelViewSet, ViewSet
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 from core.serializers import *
 from core.models import *
@@ -55,6 +57,18 @@ class VesselFlagViewSet(ModelViewSet):
 class VesselViewSet(ModelViewSet):
     serializer_class = VesselSerializer
     queryset = Vessel.objects.all()
+
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    filterset_fields = {'type': ['in'],
+                        'flag': ['in'],
+                        'build__year': ['gte', 'lte'],
+                        'length': ['gte', 'lte'],
+                        'width': ['gte', 'lte'],
+                        'grt': ['gte', 'lte'],
+                        'dwt': ['gte', 'lte']}
+    ordering_fields = ['type', 'flag', 'build', 'name', 'length', 'width', 'grt', 'dwt']
+    search_fields = ['mmsi', 'type__type', 'flag__flag', 'build__year', 'name', 'imo', 'call_sign', 'length', 'width',
+                     'grt', 'dwt']
 
     def get_permissions(self):
 

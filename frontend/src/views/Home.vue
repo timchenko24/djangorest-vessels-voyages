@@ -1,30 +1,32 @@
 <template>
  <v-container fluid>
-    <v-row cols="12">
-      <v-flex>
-        <v-card
-          class="mx-auto my-10"
-          max-width="1000"
-          elevation="15"
-        >
-          <v-img
-            class="white--text align-end"
-            height="400"
-            src="../assets/main.jpg"
+    <v-row>
+      <v-col cols="12">
+        <v-flex>
+          <v-card
+            class="mx-auto my-10"
+            max-width="1000"
+            elevation="15"
           >
-            <v-card-title>Информационно-аналитическая система<br>интеллектуального
-              анализа данных<br>о Рейсах судов</v-card-title>
-            <v-card-actions>
-              <v-btn
-                color="#FBA846"
-                text
-              >
-                Подробнее
-              </v-btn>
-            </v-card-actions>
-          </v-img>
-        </v-card>
-      </v-flex>
+            <v-img
+              class="white--text align-end"
+              height="400"
+              src="../assets/main.jpg"
+            >
+              <v-card-title>Информационно-аналитическая система<br>интеллектуального
+                анализа данных<br>о Рейсах судов</v-card-title>
+              <v-card-actions>
+                <v-btn
+                  color="#FBA846"
+                  text
+                >
+                  Подробнее
+                </v-btn>
+              </v-card-actions>
+            </v-img>
+          </v-card>
+        </v-flex>
+      </v-col>
     </v-row>
     <v-divider></v-divider>
 
