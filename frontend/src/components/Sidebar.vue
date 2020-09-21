@@ -1,8 +1,10 @@
 <template>
+
   <v-navigation-drawer
     class="w-100 h-100"
+    :class="{'border-right': this.$vuetify.breakpoint.width > 959}"
     permanent
-    :floating="this.$vuetify.breakpoint.width < 960"
+    floating
   >
 
     <v-list>
@@ -30,6 +32,7 @@
       </v-list>
 
   </v-navigation-drawer>
+
 </template>
 
 <script>
@@ -52,7 +55,5 @@ export default {
 </script>
 
 <style scoped>
-.border {
-  border-right: 1px solid;
-}
+
 </style>

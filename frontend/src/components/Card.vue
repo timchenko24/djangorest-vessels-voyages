@@ -1,4 +1,5 @@
 <template>
+
   <v-hover
     v-slot:default="{ hover }"
     close-delay="10"
@@ -26,6 +27,7 @@
     </v-card>
 
   </v-hover>
+
 </template>
 
 <script>

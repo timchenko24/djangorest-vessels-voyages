@@ -1,10 +1,11 @@
 <template>
+
  <v-container fluid>
-    <v-row>
-      <v-col cols="12">
-        <v-flex>
+
+    <v-layout row>
+        <v-flex md12 class="pa-5">
           <v-card
-            class="mx-auto my-10"
+            class="mx-auto my-10 ma-5"
             max-width="1000"
             elevation="15"
           >
@@ -26,8 +27,8 @@
             </v-img>
           </v-card>
         </v-flex>
-      </v-col>
-    </v-row>
+    </v-layout>
+
     <v-divider></v-divider>
 
     <CardList :items="items" :division="3">
@@ -45,7 +46,7 @@
 
         <router-link :to="titleScope.item.path" class="black--text">
 
-          <v-card-title>
+          <v-card-title class="justify-content-center">
             {{ titleScope.item.title }}
           </v-card-title>
 
@@ -55,13 +56,13 @@
 
       <template v-slot:content="contentScope">
 
-        <v-card-text>
+        <v-card-text class="text-center">
           {{ contentScope.item.text }}
         </v-card-text>
 
       </template>
 
-    </CardList>
+      </CardList>
 
   </v-container>
 
