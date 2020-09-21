@@ -1,9 +1,11 @@
 <template>
+
   <v-container fluid fill-height ref="chartdiv" class="py-5">
 
     <LinearProgress :height="6" color="#FBA846" :loading="loading"></LinearProgress>
 
   </v-container>
+
 </template>
 
 <script>
@@ -58,6 +60,12 @@ export default {
     this.makeMap();
     this.setImageSeries(this.ports);
     this.setLineSeries(this.routes);
+  },
+
+  beforeDestroy() {
+    if (this.map) {
+      this.map.dispose();
+    }
   },
 };
 </script>

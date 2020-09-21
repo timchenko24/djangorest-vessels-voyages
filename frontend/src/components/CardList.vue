@@ -1,5 +1,6 @@
 <template>
-  <v-row class="my-10">
+
+  <v-layout row wrap class="my-10">
 
     <v-col
       v-for="(item, index) in items"
@@ -30,7 +31,8 @@
 
     </v-col>
 
-  </v-row>
+  </v-layout>
+
 </template>
 
 <script>
@@ -48,8 +50,6 @@ export default {
       type: Number,
     },
   },
-  data: () => ({
-  }),
 };
 </script>
 
