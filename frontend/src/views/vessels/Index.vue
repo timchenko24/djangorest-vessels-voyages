@@ -27,59 +27,25 @@
 
               <v-divider class="my-5"></v-divider>
 
-              <v-flex md12>
-                <h5>Год постройки</h5>
+              <v-flex md12
+                v-for="(key, index) in Object.keys(filters)"
+                :key="index">
 
-                <RangeSelect :filter="filters.build"
-                             :placeholderLeft="filters.build.limits[0]"
-                             :placeholderRight="filters.build.limits[1]"></RangeSelect>
+                <template v-if="filters[key].range">
+
+                  <h5>{{filters[key].title}}</h5>
+
+                  <RangeSelect :filter="filters[key]"
+                               :placeholderLeft="filters[key].limits[0]"
+                               :placeholderRight="filters[key].limits[1]"></RangeSelect>
+
+                  <v-divider class="my-5"></v-divider>
+
+                </template>
+
               </v-flex>
 
-              <v-divider class="my-5"></v-divider>
-
-              <v-flex md12>
-                <h5>Длина</h5>
-
-                <RangeSelect :filter="filters.length"
-                             :placeholderLeft="filters.length.limits[0]"
-                             :placeholderRight="filters.length.limits[1]"></RangeSelect>
-              </v-flex>
-
-              <v-divider class="my-5"></v-divider>
-
-              <v-flex md12>
-                <h5>Ширина</h5>
-
-                <RangeSelect :filter="filters.width"
-                             :placeholderLeft="filters.width.limits[0]"
-                             :placeholderRight="filters.width.limits[1]"></RangeSelect>
-              </v-flex>
-
-              <v-divider class="my-5"></v-divider>
-
-              <v-flex md12>
-                <h5>Грузоподъемность</h5>
-
-                <RangeSelect :filter="filters.grt"
-                             :placeholderLeft="filters.grt.limits[0]"
-                             :placeholderRight="filters.grt.limits[1]"></RangeSelect>
-              </v-flex>
-
-              <v-divider class="my-5"></v-divider>
-
-              <v-flex md12>
-                <h5>Дедвейт</h5>
-
-                <RangeSelect :filter="filters.dwt"
-                             :placeholderLeft="filters.dwt.limits[0]"
-                             :placeholderRight="filters.dwt.limits[1]"></RangeSelect>
-              </v-flex>
-
-              <v-flex md12>
-                <div class="text-center">
-                  <v-btn @click="getFilteredData()" color="primary" dark>Фильтровать</v-btn>
-                </div>
-              </v-flex>
+                <v-btn @click="getFilteredData()" color="primary" dark>Фильтровать</v-btn>
 
             </template>
 
@@ -229,6 +195,7 @@ export default {
           dict: {},
           range: false,
           string: 'type__in=',
+          title: 'Тип судна',
           enabled: false,
         },
         flag: {
@@ -236,6 +203,7 @@ export default {
           dict: {},
           range: false,
           string: 'flag__in=',
+          title: 'Флаг',
           enabled: false,
         },
         build: {
@@ -244,6 +212,7 @@ export default {
           range: true,
           limits: [],
           string: ['build__year__gte=', 'build__year__lte='],
+          title: 'Год постройки',
           enabled: [false, false],
         },
         length: {
@@ -252,6 +221,7 @@ export default {
           range: true,
           limits: [],
           string: ['length__gte=', 'length__lte='],
+          title: 'Длина',
           enabled: [false, false],
         },
         width: {
@@ -260,6 +230,7 @@ export default {
           range: true,
           limits: [],
           string: ['width__gte=', 'width__lte='],
+          title: 'Ширина',
           enabled: [false, false],
         },
         grt: {
@@ -268,6 +239,7 @@ export default {
           range: true,
           limits: [],
           string: ['grt__gte=', 'grt__lte='],
+          title: 'Грузоподъемность',
           enabled: [false, false],
         },
         dwt: {
@@ -276,6 +248,7 @@ export default {
           range: true,
           limits: [],
           string: ['dwt__gte=', 'dwt__lte='],
+          title: 'Дедвейт',
           enabled: [false, false],
         },
       },
@@ -310,6 +283,7 @@ export default {
       const result = response.data;
 
       this.pageNumber = 1;
+      this.isSearching = false;
       this.titledVessels = this.setTitles(result, this.titles, []);
     },
 
