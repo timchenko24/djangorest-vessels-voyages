@@ -72,7 +72,7 @@
 
             <v-divider></v-divider>
 
-            <CardList :items="paginatedData" :division="4">
+            <CardList :items="paginatedVessels" :division="4">
 
               <template v-slot:img="imgScope">
 
@@ -103,8 +103,9 @@
             </CardList>
 
             <v-pagination
+              @input="updatePageNumber(pageNumber)"
               v-model="pageNumber"
-              :length="paginationLength(titledVessels)"
+              :length="paginationLength"
               circle
               class="mb-10"
             ></v-pagination>
@@ -122,12 +123,12 @@
 
 <script>
 import axios from 'axios';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import CardList from '../../components/CardList.vue';
 import Tile from '../../components/Tile.vue';
 import MultiSelect from '../../components/MultiSelect.vue';
 import LinearProgress from '../../components/LinearProgress.vue';
 import titler from '../../components/mixins/titler';
-import pagination from '../../components/mixins/pagination';
 import paramQueryGenerator from '../../components/mixins/paramQueryGenerator';
 import RangeSelect from '../../components/RangeSelect.vue';
 import Sidebar from '../../components/Sidebar.vue';
@@ -140,7 +141,7 @@ export default {
   components: {
     MultiSelect, CardList, Tile, LinearProgress, RangeSelect, Sidebar, SortBy, Search,
   },
-  mixins: [titler, pagination, paramQueryGenerator],
+  mixins: [titler, paramQueryGenerator],
 
   data() {
     return {
@@ -153,6 +154,8 @@ export default {
       flags: {},
       valid: false,
       loading: true,
+
+      pageNumber: 1,
 
       sorting: {
         name: {
@@ -258,7 +261,8 @@ export default {
   },
 
   methods: {
-
+    ...mapActions(['getVesselsData']),
+    ...mapMutations(['updatePageNumber']),
     async getData() {
       let wholeResponse = await axios.get('http://127.0.0.1:8000/api/vessel/');
       this.vessels = wholeResponse.data;
@@ -271,7 +275,7 @@ export default {
       this.flags = wholeResponse.data;
       this.filters.flag.dict = Object.assign({}, ...this.flags.map((x) => ({ [x.flag]: x.id })));
 
-      this.titledVessels = this.setTitles(this.vessels, this.titles, []);
+      // this.titledVessels = this.setTitles(this.vessels, this.titles, []);
       this.searchedVessels = [...this.titledVessels];
 
       this.loading = false;
@@ -337,7 +341,7 @@ export default {
   },
 
   computed: {
-
+    ...mapGetters(['allVessels', 'titledVessels', 'paginatedVessels', 'paginationLength']),
     paginatedData() {
       if (this.isSearching) {
         return this.searchedVessels.slice((this.pageNumber - 1) * this.perPage,
@@ -346,10 +350,10 @@ export default {
       return this.titledVessels.slice((this.pageNumber - 1) * this.perPage,
         this.pageNumber * this.perPage);
     },
-
   },
 
   async mounted() {
+    await this.getVesselsData();
     await this.getData();
     this.calculateAllRangeLimits();
   },
