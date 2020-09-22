@@ -67,8 +67,7 @@
             <SortBy :items="titledVessels" :keys="sorting"
                     :label="'Сортировать'" @onChange="updateByOrder"></SortBy>
 
-            <Search :searchBy="titledVessels" @onSearch="updateBySearch">
-            </Search>
+            <Search @onSearch="updateSearchStr" />
 
             <v-divider></v-divider>
 
@@ -146,7 +145,7 @@ export default {
   data() {
     return {
       vessels: [],
-      titledVessels: [],
+      // titledVessels: [],
       searchedVessels: [],
       titles: ['MMSI', 'Тип', 'Флаг', 'Год постройки', 'Название', 'IMO', 'Позывной',
         'Длина', 'Ширина', 'Грузоподъемность', 'Дедвейт'],
@@ -262,7 +261,7 @@ export default {
 
   methods: {
     ...mapActions(['getVesselsData']),
-    ...mapMutations(['updatePageNumber']),
+    ...mapMutations(['updatePageNumber', 'updateSearchStr']),
     async getData() {
       let wholeResponse = await axios.get('http://127.0.0.1:8000/api/vessel/');
       this.vessels = wholeResponse.data;
@@ -332,24 +331,10 @@ export default {
       this.titledVessels = val;
       this.pageNumber = 1;
     },
-
-    updateBySearch(val) {
-      this.searchedVessels = val;
-      this.isSearching = this.searchedVessels.length !== this.titledVessels.length;
-      this.pageNumber = 1;
-    },
   },
 
   computed: {
     ...mapGetters(['allVessels', 'titledVessels', 'paginatedVessels', 'paginationLength']),
-    paginatedData() {
-      if (this.isSearching) {
-        return this.searchedVessels.slice((this.pageNumber - 1) * this.perPage,
-          this.pageNumber * this.perPage);
-      }
-      return this.titledVessels.slice((this.pageNumber - 1) * this.perPage,
-        this.pageNumber * this.perPage);
-    },
   },
 
   async mounted() {

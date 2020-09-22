@@ -2,7 +2,7 @@
   <v-layout row wrap>
     <v-flex md12 class="pa-5">
       <v-text-field
-        v-model="search"
+        v-model="searchStr"
         prepend-inner-icon="mdi-magnify"
         label="Поиск"
         single-line
@@ -18,29 +18,18 @@
 export default {
   name: 'Search',
 
-  props: {
-    searchBy: {
-      type: Array,
-      required: true,
-    },
-  },
-
   data() {
     return {
-      search: '',
-      searchState: false,
+      searchStr: '',
     };
   },
 
   methods: {
-
     doSearch() {
-      if (typeof this.search !== 'string') {
-        this.search = '';
+      if (typeof this.searchStr !== 'string') {
+        this.searchStr = '';
       }
-      const searchResult = this.searchBy.filter((item) => item.name.value.toLowerCase()
-        .indexOf(this.search) !== -1);
-      this.$emit('onSearch', searchResult);
+      this.$emit('onSearch', this.searchStr);
     },
   },
 };

@@ -15,28 +15,40 @@ export default {
     updatePageNumber(state, number) {
       state.pageNumber = number;
     },
+    updateSearchStr(state, str) {
+      state.searchStr = str;
+      state.isSearching = true;
+      state.pageNumber = 1;
+    },
   },
   state: {
     vessels: [],
     titles: ['MMSI', 'Тип', 'Флаг', 'Год постройки', 'Название', 'IMO', 'Позывной', 'Длина',
       'Ширина', 'Грузоподъемность', 'Дедвейт'],
-    // titledVessels: [],
+
     pageNumber: 1,
     perPage: 6,
+
+    searchStr: '',
     isSearching: false,
-    searchedVessels: [],
   },
   getters: {
     allVessels: (state) => state.vessels,
+
     titledVessels: (state) => titler.methods.setTitles(state.vessels, state.titles, []),
+
+    searchedVessels: (state, getters) => getters.titledVessels.filter((item) => item.name.value
+      .toLowerCase().indexOf(state.searchStr.toLowerCase()) !== -1),
+
     paginatedVessels: (state, getters) => {
-      if (state.isSearching) {
-        return state.searchedVessels.slice((state.pageNumber - 1) * state.perPage,
-          state.pageNumber * state.perPage);
-      }
-      return getters.titledVessels.slice((state.pageNumber - 1) * state.perPage,
+      const searchBy = state.isSearching ? 'searchedVessels' : 'titledVessels';
+      return getters[searchBy].slice((state.pageNumber - 1) * state.perPage,
         state.pageNumber * state.perPage);
     },
-    paginationLength: (state, getters) => Math.ceil(getters.titledVessels.length / state.perPage),
+
+    paginationLength: (state, getters) => {
+      const searchBy = state.isSearching ? 'searchedVessels' : 'titledVessels';
+      return Math.ceil(getters[searchBy].length / state.perPage);
+    },
   },
 };
