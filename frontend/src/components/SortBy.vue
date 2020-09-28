@@ -6,7 +6,7 @@
       <v-select
         v-model="sortBy"
         solo
-        :items="keysTitles"
+        :items="titles"
         :label="label"
         @change="sort"
       ></v-select>
@@ -18,7 +18,7 @@
     <v-flex md3 class="pa-5 text-right">
 
       <v-btn-toggle
-        v-model="sortDesc"
+        v-model="sortByDesc"
         @change="sort"
         mandatory
       >
@@ -53,17 +53,13 @@
 </template>
 
 <script>
+
 export default {
   name: 'SortBy',
 
   props: {
     keys: {
       type: Object,
-      required: true,
-    },
-
-    items: {
-      type: Array,
       required: true,
     },
 
@@ -76,26 +72,14 @@ export default {
   data() {
     return {
       sortBy: Object.keys(this.keys)[0],
-      sortDesc: false,
+      sortByDesc: false,
     };
   },
 
   methods: {
     sort() {
       const key = this.getKeyByTitle();
-
-      if (this.sortDesc) {
-        if (this.keys[key].isString) {
-          this.items.sort((a, b) => this.sortTextFieldByDesc(a[key], b[key]));
-        }
-        this.items.sort((a, b) => b[key].value - a[key].value);
-      } else {
-        if (this.keys[key].isString) {
-          this.items.sort((a, b) => this.sortTextFieldByAsc(a[key], b[key]));
-        }
-        this.items.sort((a, b) => a[key].value - b[key].value);
-      }
-      this.$emit('onChange', this.items);
+      this.$emit('onChange', { key, isString: this.keys[key].isString, sortByDesc: this.sortByDesc });
     },
 
     getKeyByTitle() {
@@ -107,34 +91,10 @@ export default {
       });
       return key;
     },
-
-    sortTextFieldByAsc(a, b) {
-      const strA = a.value.toLowerCase();
-      const strB = b.value.toLowerCase();
-      if (strA < strB) {
-        return -1;
-      }
-      if (strA > strB) {
-        return 1;
-      }
-      return 0;
-    },
-
-    sortTextFieldByDesc(a, b) {
-      const strA = a.value.toLowerCase();
-      const strB = b.value.toLowerCase();
-      if (strA < strB) {
-        return 1;
-      }
-      if (strA > strB) {
-        return -1;
-      }
-      return 0;
-    },
   },
 
   computed: {
-    keysTitles() {
+    titles() {
       return Object.values(this.keys).map((value) => value.title);
     },
   },

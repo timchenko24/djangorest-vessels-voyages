@@ -64,8 +64,7 @@
             <h1 class="display-3 text-center pt-10">Суда</h1>
             <hr/>
 
-            <SortBy :items="titledVessels" :keys="sorting"
-                    :label="'Сортировать'" @onChange="updateByOrder"></SortBy>
+            <SortBy :keys="sortKeys" :label="'Сортировать'" @onChange="updateBySort"></SortBy>
 
             <Search @onSearch="updateSearchStr" />
 
@@ -145,8 +144,6 @@ export default {
   data() {
     return {
       vessels: [],
-      // titledVessels: [],
-      searchedVessels: [],
       titles: ['MMSI', 'Тип', 'Флаг', 'Год постройки', 'Название', 'IMO', 'Позывной',
         'Длина', 'Ширина', 'Грузоподъемность', 'Дедвейт'],
       types: {},
@@ -155,7 +152,7 @@ export default {
       loading: true,
 
       pageNumber: 1,
-
+      test: '',
       sorting: {
         name: {
           title: 'Название',
@@ -261,7 +258,7 @@ export default {
 
   methods: {
     ...mapActions(['getVesselsData']),
-    ...mapMutations(['updatePageNumber', 'updateSearchStr']),
+    ...mapMutations(['updatePageNumber', 'updateSearchStr', 'updateBySort']),
     async getData() {
       let wholeResponse = await axios.get('http://127.0.0.1:8000/api/vessel/');
       this.vessels = wholeResponse.data;
@@ -326,15 +323,11 @@ export default {
       this.filters.flag.enabled = false;
       this.pageNumber = 1;
     },
-
-    updateByOrder(val) {
-      this.titledVessels = val;
-      this.pageNumber = 1;
-    },
   },
 
   computed: {
-    ...mapGetters(['allVessels', 'titledVessels', 'paginatedVessels', 'paginationLength']),
+    ...mapGetters(['allVessels', 'titledVessels', 'paginatedVessels', 'paginationLength',
+      'sortKeys']),
   },
 
   async mounted() {

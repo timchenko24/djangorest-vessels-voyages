@@ -17,7 +17,10 @@ export default {
     },
     updateSearchStr(state, str) {
       state.searchStr = str;
-      state.isSearching = true;
+      state.pageNumber = 1;
+    },
+    updateBySort(state, obj) {
+      state.sortObj = obj;
       state.pageNumber = 1;
     },
   },
@@ -30,7 +33,46 @@ export default {
     perPage: 6,
 
     searchStr: '',
-    isSearching: false,
+
+    sortKeys: {
+      name: {
+        title: 'Название',
+        isString: true,
+      },
+      type: {
+        title: 'Тип',
+        isString: true,
+      },
+      flag: {
+        title: 'Флаг',
+        isString: true,
+      },
+      build: {
+        title: 'Год постройки',
+        isString: false,
+      },
+      length: {
+        title: 'Длина',
+        isString: false,
+      },
+      width: {
+        title: 'Ширина',
+        isString: false,
+      },
+      grt: {
+        title: 'Грузоподъемность',
+        isString: false,
+      },
+      dwt: {
+        title: 'Дедвейт',
+        isString: false,
+      },
+    },
+    sortObj: {
+      key: 'name',
+      isString: true,
+      sortByDesc: false,
+    },
   },
   getters: {
     allVessels: (state) => state.vessels,
@@ -40,15 +82,41 @@ export default {
     searchedVessels: (state, getters) => getters.titledVessels.filter((item) => item.name.value
       .toLowerCase().indexOf(state.searchStr.toLowerCase()) !== -1),
 
-    paginatedVessels: (state, getters) => {
-      const searchBy = state.isSearching ? 'searchedVessels' : 'titledVessels';
-      return getters[searchBy].slice((state.pageNumber - 1) * state.perPage,
-        state.pageNumber * state.perPage);
+    sortedVessels: (state, getters) => {
+      const arr = [...getters.searchedVessels];
+      const sortTextFieldsFn = (a, b) => {
+        let compare = 0;
+        const f1 = a[state.sortObj.key].value.toLowerCase();
+        const f2 = b[state.sortObj.key].value.toLowerCase();
+        if (f1 > f2) {
+          compare = 1;
+        } else if (f2 > f1) {
+          compare = -1;
+        }
+        return compare;
+      };
+      if (state.sortObj.sortByDesc) {
+        if (state.sortObj.isString) {
+          arr.sort(sortTextFieldsFn);
+          arr.reverse();
+        }
+        arr.sort((a, b) => b[state.sortObj.key].value
+          - a[state.sortObj.key].value);
+      } else {
+        if (state.sortObj.isString) {
+          arr.sort(sortTextFieldsFn);
+        }
+        arr.sort((a, b) => a[state.sortObj.key].value
+          - b[state.sortObj.key].value);
+      }
+      return arr;
     },
 
-    paginationLength: (state, getters) => {
-      const searchBy = state.isSearching ? 'searchedVessels' : 'titledVessels';
-      return Math.ceil(getters[searchBy].length / state.perPage);
-    },
+    paginatedVessels: (state, getters) => getters.sortedVessels.slice((state.pageNumber - 1)
+      * state.perPage, state.pageNumber * state.perPage),
+
+    paginationLength: (state, getters) => Math.ceil(getters.sortedVessels.length / state.perPage),
+
+    sortKeys: (state) => state.sortKeys,
   },
 };
