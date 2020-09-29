@@ -1,11 +1,26 @@
 import axios from 'axios';
 import titler from '../../components/mixins/titler';
+import paramQueryGenerator from '../../components/mixins/paramQueryGenerator';
 
 export default {
   actions: {
-    async getVesselsData(ctx, queryParam = '') {
-      const wholeResponse = await axios.get(`http://127.0.0.1:8000/api/vessel/${queryParam}`);
+    async getVesselsData(ctx) {
+      const wholeResponse = await axios.get('http://127.0.0.1:8000/api/vessel/');
       ctx.commit('updateVessels', wholeResponse.data);
+    },
+    async getVesselsType(ctx) {
+      const wholeResponse = await axios.get('http://127.0.0.1:8000/api/vessel-type/');
+      ctx.commit('updateTypes', wholeResponse.data);
+    },
+    async getVesselsFlag(ctx) {
+      const wholeResponse = await axios.get('http://127.0.0.1:8000/api/vessel-flag/');
+      ctx.commit('updateFlags', wholeResponse.data);
+    },
+    async getFilteredData(ctx, queryParams = {}) {
+      const path = paramQueryGenerator.methods.createParamQuery('http://127.0.0.1:8000/api/vessel/?',
+        queryParams);
+      const response = await axios.get(path);
+      ctx.commit('updateVessels', response.data);
     },
   },
   mutations: {
@@ -21,6 +36,22 @@ export default {
     },
     updateBySort(state, obj) {
       state.sortObj = obj;
+      state.pageNumber = 1;
+    },
+    updateTypes(state, obj) {
+      state.filters.type.dict = Object.assign({}, ...obj.map((x) => ({ [x.type]: x.id })));
+    },
+    updateFlags(state, obj) {
+      state.filters.flag.dict = Object.assign({}, ...obj.map((x) => ({ [x.flag]: x.id })));
+    },
+    updateFilterByType(state, val) {
+      state.filters.type.dataSet = val;
+      state.filters.type.enabled = true;
+      state.pageNumber = 1;
+    },
+    updateFilterByFlag(state, val) {
+      state.filters.flag.dataSet = val;
+      state.filters.flag.enabled = true;
       state.pageNumber = 1;
     },
   },
@@ -73,6 +104,70 @@ export default {
       isString: true,
       sortByDesc: false,
     },
+
+    filters: {
+      type: {
+        dataSet: [],
+        dict: {},
+        range: false,
+        string: 'type__in=',
+        title: 'Тип судна',
+        enabled: false,
+      },
+      flag: {
+        dataSet: [],
+        dict: {},
+        range: false,
+        string: 'flag__in=',
+        title: 'Флаг',
+        enabled: false,
+      },
+      build: {
+        dataSet: [],
+        dict: {},
+        range: true,
+        limits: [],
+        string: ['build__year__gte=', 'build__year__lte='],
+        title: 'Год постройки',
+        enabled: [false, false],
+      },
+      length: {
+        dataSet: [],
+        dict: {},
+        range: true,
+        limits: [],
+        string: ['length__gte=', 'length__lte='],
+        title: 'Длина',
+        enabled: [false, false],
+      },
+      width: {
+        dataSet: [],
+        dict: {},
+        range: true,
+        limits: [],
+        string: ['width__gte=', 'width__lte='],
+        title: 'Ширина',
+        enabled: [false, false],
+      },
+      grt: {
+        dataSet: [],
+        dict: {},
+        range: true,
+        limits: [],
+        string: ['grt__gte=', 'grt__lte='],
+        title: 'Грузоподъемность',
+        enabled: [false, false],
+      },
+      dwt: {
+        dataSet: [],
+        dict: {},
+        range: true,
+        limits: [],
+        string: ['dwt__gte=', 'dwt__lte='],
+        title: 'Дедвейт',
+        enabled: [false, false],
+      },
+    },
   },
   getters: {
     allVessels: (state) => state.vessels,
@@ -118,5 +213,7 @@ export default {
     paginationLength: (state, getters) => Math.ceil(getters.sortedVessels.length / state.perPage),
 
     sortKeys: (state) => state.sortKeys,
+
+    filterKeys: (state) => state.filters,
   },
 };

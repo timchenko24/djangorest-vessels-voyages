@@ -55,7 +55,7 @@ export default {
 
     selectAbort() {
       this.selectedItems = [];
-      this.$emit('onAbort', false);
+      this.$emit('onReset', false);
     },
 
     selectChanged() {
