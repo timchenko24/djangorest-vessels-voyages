@@ -215,6 +215,6 @@ export default {
 
     vesselsSortKeys: (state) => state.sortKeys,
 
-    filterKeys: (state) => state.filters,
+    vesselsFilterKeys: (state) => state.filters,
   },
 };

@@ -15,29 +15,29 @@
             <template v-slot:content>
               <v-flex md12>
                 <MultiSelect @onReset="updateFilterByType" @onChange="updateFilterByType"
-                             label='Тип судна' :filterBy="Object.keys(filterKeys.type.dict)">
+                             label='Тип судна' :filterBy="Object.keys(vesselsFilterKeys.type.dict)">
                 </MultiSelect>
               </v-flex>
 
               <v-flex md12>
                 <MultiSelect @onReset="updateFilterByFlag" @onChange="updateFilterByFlag"
-                             label='Флаг' :filterBy="Object.keys(filterKeys.flag.dict)">
+                             label='Флаг' :filterBy="Object.keys(vesselsFilterKeys.flag.dict)">
                 </MultiSelect>
               </v-flex>
 
               <v-divider class="my-5"></v-divider>
 
               <v-flex md12
-                v-for="(key, index) in Object.keys(filterKeys)"
+                v-for="(key, index) in Object.keys(vesselsFilterKeys)"
                 :key="index">
 
-                <template v-if="filterKeys[key].range">
+                <template v-if="vesselsFilterKeys[key].range">
 
-                  <h5>{{filterKeys[key].title}}</h5>
+                  <h5>{{vesselsFilterKeys[key].title}}</h5>
 
-                  <RangeSelect :filter="filterKeys[key]"
-                               :placeholderLeft="filterKeys[key].limits[0]"
-                               :placeholderRight="filterKeys[key].limits[1]"></RangeSelect>
+                  <RangeSelect :filter="vesselsFilterKeys[key]"
+                               :limitMin="vesselsFilterKeys[key].limits[0]"
+                               :limitMax="vesselsFilterKeys[key].limits[1]"></RangeSelect>
 
                   <v-divider class="my-5"></v-divider>
 
@@ -45,7 +45,9 @@
 
               </v-flex>
 
-                <v-btn @click="getFilteredData(filterKeys)" color="primary" dark>Фильтровать</v-btn>
+              <v-btn @click="getFilteredData(vesselsFilterKeys)" color="primary" dark>
+                Фильтровать
+              </v-btn>
 
             </template>
 
@@ -153,10 +155,10 @@ export default {
       'updateFilterByFlag']),
 
     calculateAllRangeLimits() {
-      Object.entries(this.filterKeys).forEach(([key, value]) => {
+      Object.entries(this.vesselsFilterKeys).forEach(([key, value]) => {
         if (value.range) {
-          this.filterKeys[key].limits = RangeSelect.methods.calculateRangeLimits(this.allVessels,
-            key);
+          this.vesselsFilterKeys[key].limits = RangeSelect.methods
+            .calculateRangeLimits(this.allVessels, key);
         }
       });
     },
@@ -169,7 +171,7 @@ export default {
 
   computed: {
     ...mapGetters(['allVessels', 'titledVessels', 'paginatedVessels', 'vesselsPaginationLength',
-      'vesselsSortKeys', 'filterKeys']),
+      'vesselsSortKeys', 'vesselsFilterKeys']),
   },
 
   async mounted() {
