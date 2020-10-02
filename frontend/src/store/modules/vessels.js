@@ -210,9 +210,10 @@ export default {
     paginatedVessels: (state, getters) => getters.sortedVessels.slice((state.pageNumber - 1)
       * state.perPage, state.pageNumber * state.perPage),
 
-    paginationLength: (state, getters) => Math.ceil(getters.sortedVessels.length / state.perPage),
+    vesselsPaginationLength: (state, getters) => Math
+      .ceil(getters.sortedVessels.length / state.perPage),
 
-    sortKeys: (state) => state.sortKeys,
+    vesselsSortKeys: (state) => state.sortKeys,
 
     filterKeys: (state) => state.filters,
   },

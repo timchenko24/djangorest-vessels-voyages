@@ -64,7 +64,7 @@
             <h1 class="display-3 text-center pt-10">Суда</h1>
             <hr/>
 
-            <SortBy :keys="sortKeys" :label="'Сортировать'" @onChange="updateBySort"></SortBy>
+            <SortBy :keys="vesselsSortKeys" :label="'Сортировать'" @onChange="updateBySort" />
 
             <Search @onSearch="updateSearchStr" />
 
@@ -103,7 +103,7 @@
             <v-pagination
               @input="updatePageNumber(pageNumber)"
               v-model="pageNumber"
-              :length="paginationLength"
+              :length="vesselsPaginationLength"
               circle
               class="mb-10"
             ></v-pagination>
@@ -168,8 +168,8 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['allVessels', 'titledVessels', 'paginatedVessels', 'paginationLength',
-      'sortKeys', 'filterKeys']),
+    ...mapGetters(['allVessels', 'titledVessels', 'paginatedVessels', 'vesselsPaginationLength',
+      'vesselsSortKeys', 'filterKeys']),
   },
 
   async mounted() {
