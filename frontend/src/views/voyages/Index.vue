@@ -15,17 +15,40 @@
             <template v-slot:content>
 
               <v-flex md12>
-                <MultiSelect @onAbort="abortSelectByType" @onChange="updateByType" label='Тип судна'
-                             :filterBy="Object.keys(filters.route.dict)">
+                <MultiSelect @onReset="updateFilterByRoute" @onChange="updateFilterByRoute"
+                             label='Маршрут' :filterBy="Object.keys(voyagesFilterKeys.route.dict)">
                 </MultiSelect>
               </v-flex>
 
               <v-flex md12>
-                <MultiSelect @onAbort="abortSelectByFlag" @onChange="updateByFlag" label='Флаг'
-                             :filterBy="Object.keys(filters.vessel.dict)">
+                <MultiSelect @onReset="updateFilterByVessel" @onChange="updateFilterByVessel"
+                             label='Судно' :filterBy="Object.keys(voyagesFilterKeys.vessel.dict)">
                 </MultiSelect>
               </v-flex>
 
+              <v-divider class="my-5"></v-divider>
+
+              <v-flex md12
+                v-for="(key, index) in Object.keys(voyagesFilterKeys)"
+                :key="index">
+
+                <template v-if="voyagesFilterKeys[key].range">
+
+                  <h5>{{voyagesFilterKeys[key].title}}</h5>
+
+                  <RangeSelect :filter="voyagesFilterKeys[key]"
+                               :limitMin="voyagesFilterKeys[key].limits[0]"
+                               :limitMax="voyagesFilterKeys[key].limits[1]"></RangeSelect>
+
+                  <v-divider class="my-5"></v-divider>
+
+                </template>
+
+              </v-flex>
+
+              <v-btn @click="getFilteredData(voyagesFilterKeys)" color="primary" dark>
+                Фильтровать
+              </v-btn>
 
             </template>
 
@@ -44,23 +67,37 @@
             <h1 class="display-3 text-center pt-10">Рейсы</h1>
             <hr/>
 
-            <CardList :items="titledVoyages" :division="6">
+            <SortBy :keys="voyagesSortKeys" :label="'Сортировать'" @onChange="updateBySort" />
 
-                <template v-slot:title="titleScope">
+            <Search @onSearch="updateSearchStr" />
 
-                  <v-card-title class="font-weight-black indigo lighten-5">
-                    {{ titleScope.item.route.value }}
-                  </v-card-title>
+            <v-divider></v-divider>
 
-                </template>
+            <CardList :items="paginatedVoyages" :division="6">
 
-                <template v-slot:content="contentScope">
+              <template v-slot:title="titleScope">
 
-                  <Tile :items="contentScope.item"></Tile>
+                <v-card-title class="font-weight-black indigo lighten-5">
+                  {{ titleScope.item.route.value }}
+                </v-card-title>
 
-                </template>
+              </template>
 
-              </CardList>
+              <template v-slot:content="contentScope">
+
+                <Tile :items="contentScope.item"></Tile>
+
+              </template>
+
+            </CardList>
+
+            <v-pagination
+              @input="updatePageNumber(pageNumber)"
+              v-model="pageNumber"
+              :length="voyagesPaginationLength"
+              circle
+              class="mb-10"
+            ></v-pagination>
 
           </v-flex>
 
@@ -75,185 +112,66 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import CardList from '../../components/CardList.vue';
 import Tile from '../../components/Tile.vue';
 import LinearProgress from '../../components/LinearProgress.vue';
-import titler from '../../components/mixins/titler';
+import SortBy from '../../components/SortBy.vue';
+import Search from '../../components/Search.vue';
 import MultiSelect from '../../components/MultiSelect.vue';
-// import RangeSelect from '../../components/RangeSelect.vue';
 import Sidebar from '../../components/Sidebar.vue';
-// import SortBy from '../../components/SortBy.vue';
-// import Search from '../../components/Search.vue';
 import pagination from '../../components/mixins/pagination';
 import paramQueryGenerator from '../../components/mixins/paramQueryGenerator';
+import titler from '../../components/mixins/titler';
+import RangeSelect from '../../components/RangeSelect.vue';
 
 export default {
   name: 'Index',
   components: {
-    CardList, Tile, LinearProgress, MultiSelect, Sidebar, // SortBy, Search, RangeSelect
+    RangeSelect,
+    Search,
+    SortBy,
+    CardList,
+    Tile,
+    LinearProgress,
+    MultiSelect,
+    Sidebar,
   },
   mixins: [titler, pagination, paramQueryGenerator],
 
   data() {
     return {
-      voyages: [],
-      titledVoyages: [],
-      titles: ['Маршрут', 'Судно', 'Дата отбытия', 'Дата прибытия', 'Время в порту (час)', 'Затраты на топливо ($)',
-        'Затраты на экипаж ($)', 'Портовые расходы ($)', 'Расходы на страхование ($)', 'Сумма расходов ($)',
-        'Доход от перевозки груза ($)', 'Чистый суммарный фрахт ($)', 'Прибыль за рейс ($)'],
-      routes: {},
-      dates: {},
-      vessels: {},
+      pageNumber: 1,
       loading: true,
-
-      filters: {
-        route: {
-          dataSet: [],
-          dict: {},
-          range: false,
-          string: 'route__in=',
-          title: 'Маршрут',
-          enabled: false,
-        },
-        vessel: {
-          dataSet: [],
-          dict: {},
-          range: false,
-          string: 'mmsi__in=',
-          title: 'Судно',
-          enabled: false,
-        },
-        departure_date: {
-          dataSet: [],
-          dict: {},
-          range: false,
-          string: 'departure_date__in=',
-          title: 'Дата отправления',
-          enabled: false,
-        },
-        arrival_date: {
-          dataSet: [],
-          dict: {},
-          range: false,
-          string: 'arrival_date__in=',
-          title: 'Дата отправления',
-          enabled: false,
-        },
-        port_time: {
-          dataSet: [],
-          dict: {},
-          range: true,
-          limits: [],
-          string: ['time_in_port__gte=', 'time_in_port__lte='],
-          title: 'Время в порту',
-          enabled: [false, false],
-        },
-        fuel_costs: {
-          dataSet: [],
-          dict: {},
-          range: true,
-          limits: [],
-          string: ['fuel_costs__gte=', 'fuel_costs__lte='],
-          title: 'Затраты на топливо',
-          enabled: [false, false],
-        },
-        crew_costs: {
-          dataSet: [],
-          dict: {},
-          range: true,
-          limits: [],
-          string: ['crew_costs__gte=', 'crew_costs__lte='],
-          title: 'Затраты на экипаж',
-          enabled: [false, false],
-        },
-        port_charges: {
-          dataSet: [],
-          dict: {},
-          range: true,
-          limits: [],
-          string: ['port_charges__gte=', 'port_charges__lte='],
-          title: 'Портовые расходы',
-          enabled: [false, false],
-        },
-        insurance_costs: {
-          dataSet: [],
-          dict: {},
-          range: true,
-          limits: [],
-          string: ['insurance_costs__gte=', 'insurance_costs__lte='],
-          title: 'Затраты на страховку',
-          enabled: [false, false],
-        },
-        total_costs: {
-          dataSet: [],
-          dict: {},
-          range: true,
-          limits: [],
-          string: ['total_costs__gte=', 'total_costs__lte='],
-          title: 'Сумма затрат',
-          enabled: [false, false],
-        },
-        cargo_income: {
-          dataSet: [],
-          dict: {},
-          range: true,
-          limits: [],
-          string: ['cargo_income__gte=', 'cargo_income__lte='],
-          title: 'Доход от перевозки груза',
-          enabled: [false, false],
-        },
-        net_total_freight: {
-          dataSet: [],
-          dict: {},
-          range: true,
-          limits: [],
-          string: ['net_total_freight__gte=', 'net_total_freight__lte='],
-          title: 'Чистый суммарный фрахт',
-          enabled: [false, false],
-        },
-        voyage_profit: {
-          dataSet: [],
-          dict: {},
-          range: true,
-          limits: [],
-          string: ['voyage_profit__gte=', 'voyage_profit__lte='],
-          title: 'Прибыль за рейс',
-          enabled: [false, false],
-        },
-      },
     };
   },
 
   methods: {
-    async getData() {
-      const path = 'http://localhost:8000/api';
-      let wholeResponse = await axios.get(`${path}/voyage/`);
-      this.voyages = wholeResponse.data;
+    ...mapActions(['getVoyagesData', 'getVesselsData', 'getRoutesData', 'getFilteredData']),
+    ...mapMutations(['updateBySort', 'updateSearchStr', 'updatePageNumber', 'updateFilterByVessel',
+      'updateFilterByRoute']),
 
-      wholeResponse = await axios.get(`${path}/route/`);
-      this.routes = wholeResponse.data;
-      this.filters.route.dict = Object.assign({}, ...this.routes
-        .map((x) => ({ [x.departure_port]: x.id })));
-
-      wholeResponse = await axios.get(`${path}/date/`);
-      this.date = wholeResponse.data;
-      this.filters.date.dict = Object.assign({}, ...this.date
-        .map((x) => ({ [x.minute]: x.id })));
-
-      wholeResponse = await axios.get(`${path}/vessel/`);
-      this.vessels = wholeResponse.data;
-      this.filters.vessel.dict = Object.assign({}, ...this.vessels
-        .map((x) => ({ [x.name]: x.mmsi })));
-
-      this.titledVoyages = this.setTitles(this.voyages, this.titles, ['id']);
-
-      this.loading = false;
+    calculateAllRangeLimits() {
+      Object.entries(this.voyagesFilterKeys).forEach(([key, value]) => {
+        if (value.range) {
+          this.voyagesFilterKeys[key].limits = RangeSelect.methods
+            .calculateRangeLimits(this.allVoyages, key);
+        }
+      });
     },
   },
 
+  computed: {
+    ...mapGetters(['allVoyages', 'titledVoyages', 'paginatedVoyages', 'voyagesSortKeys',
+      'voyagesPaginationLength', 'voyagesFilterKeys']),
+  },
+
   async mounted() {
-    await this.getData();
+    await this.getVoyagesData();
+    await this.getVesselsData();
+    await this.getRoutesData();
+    this.loading = false;
+    this.calculateAllRangeLimits();
   },
 };
 </script>
