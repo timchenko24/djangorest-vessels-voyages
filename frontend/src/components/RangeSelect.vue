@@ -7,7 +7,7 @@
           v-model.number="filter.dataSet[0]"
           :rules="[checkRange(ruleErrorText,filter.dataSet[0])]"
           label="От"
-          :placeholder="placeholderLeft"
+          :placeholder="limitMin"
           clearable
           @change='checkEmpty($event, 0)'
         ></v-text-field>
@@ -20,7 +20,7 @@
           v-model.number="filter.dataSet[1]"
           :rules="[checkRange(ruleErrorText, filter.dataSet[1])]"
           label="До"
-          :placeholder="placeholderRight"
+          :placeholder="limitMax"
           clearable
           @change='checkEmpty($event, 1)'
         ></v-text-field>
@@ -39,10 +39,10 @@ export default {
       type: Object,
       required: true,
     },
-    placeholderLeft: {
+    limitMin: {
       type: [String, Number],
     },
-    placeholderRight: {
+    limitMax: {
       type: [String, Number],
     },
   },
@@ -64,7 +64,7 @@ export default {
     },
 
     checkRange(err, value) {
-      return ((value >= this.placeholderLeft && value <= this.placeholderRight) || !value)
+      return ((value >= this.limitMin && value <= this.limitMax) || !value)
           || err;
     },
 
