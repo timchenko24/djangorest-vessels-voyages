@@ -54,7 +54,9 @@
         0,
         "error",
         "windows"
-      ]
+      ],
+      "consistent-return": 0,
+      "no-plusplus": 0
     }
   },
   "browserslist": [
