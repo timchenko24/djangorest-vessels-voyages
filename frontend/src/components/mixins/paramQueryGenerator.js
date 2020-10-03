@@ -1,10 +1,10 @@
 export default {
   methods: {
-    createParamQuery(path) {
+    createParamQuery(path, filters) {
       let local = path;
       const esc = encodeURIComponent;
       // eslint-disable-next-line no-unused-vars
-      Object.entries(this.filters).forEach(([_, filter]) => {
+      Object.entries(filters).forEach(([_, filter]) => {
         if (filter.enabled && !filter.range) {
           local += filter.string;
 
