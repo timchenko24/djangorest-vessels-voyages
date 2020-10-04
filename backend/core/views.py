@@ -1,3 +1,4 @@
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
@@ -6,19 +7,47 @@ from core.serializers import *
 from core.models import *
 
 
+list_permission_classes = {
+    "list": [AllowAny],
+    "retrieve": [AllowAny],
+    "create": [IsAdminUser],
+    "update": [IsAdminUser],
+    "partial_update": [IsAdminUser],
+    "destroy": [IsAdminUser]
+}
+
+
 class VesselTypeViewSet(ModelViewSet):
     serializer_class = VesselTypeSerializer
     queryset = VesselType.objects.all()
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in list_permission_classes[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
 
 
 class VesselBuildViewSet(ModelViewSet):
     serializer_class = VesselBuildSerializer
     queryset = VesselBuild.objects.all()
 
+    def get_permissions(self):
+        try:
+            return [permission() for permission in list_permission_classes[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
 
 class VesselFlagViewSet(ModelViewSet):
     serializer_class = VesselFlagSerializer
     queryset = VesselFlag.objects.all()
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in list_permission_classes[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
 
 
 class VesselViewSet(ModelViewSet):
@@ -37,25 +66,55 @@ class VesselViewSet(ModelViewSet):
     search_fields = ['mmsi', 'type__type', 'flag__flag', 'build__year', 'name', 'imo', 'call_sign', 'length', 'width',
                      'grt', 'dwt']
 
+    def get_permissions(self):
+        try:
+            return [permission() for permission in list_permission_classes[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
 
 class PortCountryViewSet(ModelViewSet):
     serializer_class = PortCountrySerializer
     queryset = PortCountry.objects.all()
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in list_permission_classes[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
 
 
 class PortViewSet(ModelViewSet):
     serializer_class = PortSerializer
     queryset = Port.objects.all()
 
+    def get_permissions(self):
+        try:
+            return [permission() for permission in list_permission_classes[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
 
 class RouteViewSet(ModelViewSet):
     serializer_class = RouteSerializer
     queryset = Route.objects.all()
 
+    def get_permissions(self):
+        try:
+            return [permission() for permission in list_permission_classes[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
 
 class DateViewSet(ModelViewSet):
     serializer_class = DateSerializer
     queryset = Date.objects.all()
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in list_permission_classes[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
 
 
 class VoyageViewSet(ModelViewSet):
@@ -83,3 +142,9 @@ class VoyageViewSet(ModelViewSet):
     search_fields = ['route', 'mmsi', 'departure_date', 'arrival_date', 'time_in_port', 'fuel_costs', 'crew_costs',
                      'port_charges', 'insurance_costs', 'total_costs', 'cargo_income', 'net_total_freight',
                      'voyage_profit']
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in list_permission_classes[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
