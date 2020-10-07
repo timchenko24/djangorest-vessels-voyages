@@ -29,7 +29,11 @@ const routes = [
     name: 'VoyageIndex',
     component: () => import('../views/voyages/Index.vue'),
   },
-
+  {
+    path: '/register',
+    name: 'RegisterIndex',
+    component: () => import('../views/Register.vue'),
+  },
 ];
 
 const router = new VueRouter({

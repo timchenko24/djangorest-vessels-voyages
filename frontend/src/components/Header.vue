@@ -17,10 +17,12 @@
       <v-icon right>mdi-login</v-icon>
     </v-btn>
 
-    <v-btn text>
-      Регистрация
-      <v-icon right>mdi-account-plus</v-icon>
-    </v-btn>
+    <router-link to="/register">
+      <v-btn text>
+        Регистрация
+        <v-icon right>mdi-account-plus</v-icon>
+      </v-btn>
+    </router-link>
 
   </v-app-bar>
 </template>
