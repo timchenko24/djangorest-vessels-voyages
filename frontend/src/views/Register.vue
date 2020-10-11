@@ -6,14 +6,14 @@
 
       <v-col cols="12" md="7">
 
-        <v-alert v-for="(alert, index) in alerts"
+        <v-alert v-for="(alert, index) in allAlerts"
           dense
           outlined
-          :type="alertType"
+          :type="alert.type"
           class="text-center"
           :key="index"
         >
-          {{alert}}
+          {{alert.text}}
         </v-alert>
 
         <v-card class="px-4" min-width="316px">
@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'Register',
@@ -114,9 +114,10 @@ export default {
   },
 
   methods: {
+    ...mapActions(['registerUser']),
     validate() {
       if (this.$refs.registerForm.validate()) {
-        const body = {
+        const payload = {
           username: this.login,
           password: this.password,
           email: this.email,
@@ -124,21 +125,13 @@ export default {
           last_name: this.lastName,
         };
 
-        axios.post('http://localhost:8000/users/', body)
-          .then(() => {
-            this.alerts.push('Пользователь зарегистрирован!');
-            this.alertType = 'success';
-            this.$refs.registerForm.reset();
-          })
-          .catch((e) => {
-            this.alerts = Object.values(e.response.data).map((value) => value[0]);
-            this.alertType = 'error';
-          });
+        this.registerUser(payload);
       }
     },
   },
 
   computed: {
+    ...mapGetters(['allAlerts']),
     passwordMatch() {
       return () => this.password === this.verify || 'Пароли должны совпадать';
     },
