@@ -34,6 +34,16 @@ const routes = [
     name: 'RegisterIndex',
     component: () => import('../views/Register.vue'),
   },
+  {
+    path: '/login',
+    name: 'LoginIndex',
+    component: () => import('../views/Login.vue'),
+  },
+  {
+    path: '/logout',
+    name: 'LogoutIndex',
+    component: () => import('../views/Logout.vue'),
+  },
 ];
 
 const router = new VueRouter({
