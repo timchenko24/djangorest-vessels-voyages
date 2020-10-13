@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import store from '../store';
 
 Vue.use(VueRouter);
 
@@ -43,12 +44,32 @@ const routes = [
     path: '/logout',
     name: 'LogoutIndex',
     component: () => import('../views/Logout.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/dashboard',
+    name: 'DashboardIndex',
+    component: () => import('../views/Dashboard.vue'),
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
+
 
 const router = new VueRouter({
   routes,
   mode: 'history',
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth) && !store.getters.isAuthenticated) {
+    next('/login');
+  } else {
+    next();
+  }
 });
 
 export default router;
