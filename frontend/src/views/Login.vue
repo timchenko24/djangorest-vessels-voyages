@@ -57,7 +57,6 @@
 </template>
 
 <script>
-// import axios from 'axios';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 
 export default {
@@ -69,10 +68,6 @@ export default {
       login: '',
       password: '',
 
-      show: false,
-      alerts: [],
-      alertType: '',
-
       rules: {
         required: (value) => !!value || 'Обязательно',
       },
@@ -82,6 +77,7 @@ export default {
   methods: {
     ...mapActions(['obtainToken']),
     ...mapMutations(['updateToken']),
+
     validate() {
       if (this.$refs.loginForm.validate()) {
         const payload = {
@@ -89,21 +85,6 @@ export default {
           password: this.password,
         };
         this.obtainToken(payload);
-        // const body = {
-        //   username: this.login,
-        //   password: this.password,
-        // };
-        //
-        // axios.post('http://localhost:8000/auth/obtain_token/', body)
-        //   .then(() => {
-        //     this.alerts.push('Вы успешно выполнили вход!');
-        //     this.alertType = 'success';
-        //     this.$refs.loginForm.reset();
-        //   })
-        //   .catch((e) => {
-        //     this.alerts = Object.values(e.response.data).map((value) => value[0]);
-        //     this.alertType = 'error';
-        //   });
       }
     },
   },

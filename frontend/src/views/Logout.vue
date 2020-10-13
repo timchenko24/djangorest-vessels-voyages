@@ -21,11 +21,12 @@ export default {
   name: 'Logout',
 
   methods: {
-    ...mapMutations(['removeToken', 'updateAuthStatus']),
+    ...mapMutations(['removeToken', 'removeUserName', 'updateAuthStatus']),
   },
 
   mounted() {
     this.removeToken();
+    this.removeUserName();
     setTimeout(() => this.$router.push('/'), 1500);
     this.updateAuthStatus();
   },
