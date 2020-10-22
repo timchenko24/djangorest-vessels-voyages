@@ -1,5 +1,6 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import router from '../../router';
 
 export default {
   state: {
@@ -34,6 +35,7 @@ export default {
           ctx.commit('setUserName', payload.username);
           ctx.commit('updateAuthStatus');
           ctx.commit('addAlert', { text: 'Вход выполнен', type: 'success' });
+          setTimeout(() => router.push('/'), 1500);
         })
         .catch((error) => {
           ctx.commit('addAlert', {
