@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from core.models import *
 from ..queries import queries
+from ..utils import get_query_data, label_clustered_data
 from sklearn.cluster import KMeans, AgglomerativeClustering
 import numpy as np
 
@@ -13,54 +14,25 @@ class KMeansView(APIView):
     # authentication_classes = [authentication.TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
 
-    def get_data(self, key):
-        try:
-            return queries[key]
-        except KeyError:
-            raise Http404
-
-    def label_clustered_data(self, df, labels):
-        return [{'point': {'x': col1, 'y': col2}, 'label': lbl}
-                  for col1, col2, lbl in zip(df[list(df.columns)[0]], df[list(df.columns)[1]], labels)]
-
     def get(self, request, key):
-        df = self.get_data(key=key)
+        df = get_query_data(key=key)
 
-        kmeans = KMeans(n_clusters=3).fit(df)
-
-        result = self.label_clustered_data(df=df, labels=kmeans.labels_)
-
-        return Response({'result': result}, status=status.HTTP_200_OK)
-
-    def post(self, request, key):
-        df = self.get_data(key=key)
-
-        k = request.data.get('k') or 3
-        log_bool = bool(request.data.get('log'))
+        k = int(request.query_params.get('k', 3))
+        log_bool = bool(request.query_params.get('log', False))
 
         df = np.log(df) if log_bool else df
 
         kmeans = KMeans(n_clusters=k).fit(df)
 
-        result = self.label_clustered_data(df=df, labels=kmeans.labels_)
+        result = label_clustered_data(df=df, labels=kmeans.labels_)
 
         return Response({'result': result}, status=status.HTTP_200_OK)
 
 
 class AgglomerativeView(APIView):
 
-    def get_data(self, key):
-        try:
-            return queries[key]
-        except KeyError:
-            raise Http404
-
-    def label_clustered_data(self, df, labels):
-        return [{'point': {'x': col1, 'y': col2}, 'label': lbl}
-                  for col1, col2, lbl in zip(df[list(df.columns)[0]], df[list(df.columns)[1]], labels)]
-
     def get(self, request, key):
-        df = self.get_data(key=key)
+        df = get_query_data(key=key)
 
         linkage = request.query_params.get('linkage', 'single')
         log_bool = bool(request.query_params.get('log', False))
@@ -69,6 +41,6 @@ class AgglomerativeView(APIView):
 
         agg = AgglomerativeClustering(linkage=linkage).fit(df)
 
-        result = self.label_clustered_data(df=df, labels=agg.labels_)
+        result = label_clustered_data(df=df, labels=agg.labels_)
 
         return Response({'result': result}, status=status.HTTP_200_OK)
