@@ -44,4 +44,31 @@ class KMeansView(APIView):
 
         result = self.label_clustered_data(df=df, labels=kmeans.labels_)
 
-        return Response({'test': result}, status=status.HTTP_200_OK)
+        return Response({'result': result}, status=status.HTTP_200_OK)
+
+
+class AgglomerativeView(APIView):
+
+    def get_data(self, key):
+        try:
+            return queries[key]
+        except KeyError:
+            raise Http404
+
+    def label_clustered_data(self, df, labels):
+        return [{'point': {'x': col1, 'y': col2}, 'label': lbl}
+                  for col1, col2, lbl in zip(df[list(df.columns)[0]], df[list(df.columns)[1]], labels)]
+
+    def get(self, request, key):
+        df = self.get_data(key=key)
+
+        linkage = request.query_params.get('linkage', 'single')
+        log_bool = bool(request.query_params.get('log', False))
+
+        df = np.log(df) if log_bool else df
+
+        agg = AgglomerativeClustering(linkage=linkage).fit(df)
+
+        result = self.label_clustered_data(df=df, labels=agg.labels_)
+
+        return Response({'result': result}, status=status.HTTP_200_OK)
