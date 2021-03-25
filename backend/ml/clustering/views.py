@@ -1,13 +1,9 @@
-from django.http import Http404
 from rest_framework import status, permissions, authentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.models import *
-from ..queries import queries
-from ..utils import get_query_data, label_clustered_data
+from ..utils import get_query_data, label_clustered_data, process_query_params
 from sklearn.cluster import KMeans, AgglomerativeClustering
-import numpy as np
 
 
 class KMeansView(APIView):
@@ -18,9 +14,7 @@ class KMeansView(APIView):
         df = get_query_data(key=key)
 
         k = int(request.query_params.get('k', 3))
-        log_bool = bool(request.query_params.get('log', False))
-
-        df = np.log(df) if log_bool else df
+        df = process_query_params(df, request.query_params)
 
         kmeans = KMeans(n_clusters=k).fit(df)
 
@@ -35,9 +29,7 @@ class AgglomerativeView(APIView):
         df = get_query_data(key=key)
 
         linkage = request.query_params.get('linkage', 'single')
-        log_bool = bool(request.query_params.get('log', False))
-
-        df = np.log(df) if log_bool else df
+        df = process_query_params(df, request.query_params)
 
         agg = AgglomerativeClustering(linkage=linkage).fit(df)
 
