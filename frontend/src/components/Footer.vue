@@ -11,7 +11,7 @@
     >
       <v-card-text>
         <v-btn
-          v-for="icon in icons"
+          v-for="icon in allIcons"
           :key="icon"
           class="mx-4 white--text"
           icon
@@ -36,8 +36,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'Footer',
+
+  computed: {
+    ...mapGetters(['allIcons']),
+  },
 };
 </script>
 

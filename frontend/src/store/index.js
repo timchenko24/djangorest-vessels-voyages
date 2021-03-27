@@ -6,11 +6,12 @@ import main from './modules/main';
 import register from './modules/register';
 import login from './modules/login';
 import user from './modules/user';
+import footer from './modules/footer';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    vessels, voyages, main, register, login, user,
+    vessels, voyages, main, register, login, user, footer,
   },
 });
