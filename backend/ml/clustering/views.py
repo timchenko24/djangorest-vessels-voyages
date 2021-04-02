@@ -10,8 +10,8 @@ class KMeansView(APIView):
     # authentication_classes = [authentication.TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, key):
-        df = get_query_data(key=key)
+    def get(self, request):
+        df = get_query_data(key=request.query_params.get('query'))
 
         k = int(request.query_params.get('k', 3))
         df = process_query_params(df, request.query_params)
@@ -25,8 +25,8 @@ class KMeansView(APIView):
 
 class AgglomerativeView(APIView):
 
-    def get(self, request, key):
-        df = get_query_data(key=key)
+    def get(self, request):
+        df = get_query_data(key=request.query_params.get('query'))
 
         linkage = request.query_params.get('linkage', 'single')
         df = process_query_params(df, request.query_params)
