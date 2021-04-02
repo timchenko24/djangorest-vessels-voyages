@@ -9,6 +9,6 @@ class AvailableQueries(APIView):
     def get(self, request):
         titles = ['Дедвейт - Затраты на топливо', 'Длина судна - Прибыль за рейс']
 
-        res = [{query: title} for query, title in zip(queries.keys(), titles)]
+        res = {query: title for query, title in zip(queries.keys(), titles)}
 
-        return Response({'result': res}, status=status.HTTP_200_OK)
+        return Response([res], status=status.HTTP_200_OK)
