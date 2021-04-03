@@ -26,8 +26,8 @@ def process_query_params(df, params):
         "minmax": MinMaxScaler().fit_transform
     }
 
-    for key, value in params.items():
-        if value and key in conditions:
+    for key in params.keys():
+        if key in conditions:
             new_df = conditions[key](df)
 
     return pd.DataFrame(new_df, index=df.index, columns=df.columns)
