@@ -20,7 +20,7 @@ class KMeansView(APIView):
 
         result = label_clustered_data(df=df, labels=kmeans.labels_)
 
-        return Response({'result': result}, status=status.HTTP_200_OK)
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class AgglomerativeView(APIView):
@@ -35,4 +35,4 @@ class AgglomerativeView(APIView):
 
         result = label_clustered_data(df=df, labels=agg.labels_)
 
-        return Response({'result': result}, status=status.HTTP_200_OK)
+        return Response(result, status=status.HTTP_200_OK)
