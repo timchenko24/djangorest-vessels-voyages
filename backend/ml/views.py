@@ -8,7 +8,25 @@ class AvailableQueries(APIView):
 
     def get(self, request):
         titles = ['Дедвейт - Затраты на топливо', 'Длина судна - Прибыль за рейс']
+        titled_queries = {title: query for query, title in zip(queries.keys(), titles)}
 
-        res = {query: title for query, title in zip(queries.keys(), titles)}
+        funcs = {
+          'Без преобразования': '',
+          'MinMax': 'minmax',
+          'Standard': 'std',
+          'Log': 'log',
+        }
 
-        return Response([res], status=status.HTTP_200_OK)
+        algs = {
+          'Agglomerative': 'agglomerative',
+          'K-means': 'kmeans',
+        }
+
+        linkages = {
+            'Single': 'single',
+            'Complete': 'complete',
+            'Average': 'average',
+            'Ward': 'ward',
+        }
+
+        return Response({'datasets': titled_queries, 'funcs': funcs, 'algs': algs, 'linkages': linkages}, status=status.HTTP_200_OK)
