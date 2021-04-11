@@ -13,7 +13,7 @@ def get_query_data(key):
 
 
 def label_clustered_data(df, labels):
-    return [{'point': {'x': col1, 'y': col2}, 'label': lbl}
+    return [{'x': col1, 'y': col2, 'label': lbl}
             for col1, col2, lbl in zip(df[list(df.columns)[0]], df[list(df.columns)[1]], labels)]
 
 
