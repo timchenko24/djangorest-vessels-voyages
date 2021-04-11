@@ -11,7 +11,6 @@ export default {
       action: {
         selected: undefined,
         options: {
-          'Отобразить данные': 'show',
           'Отобразить распределения': 'distrib',
           'Выбрать алгоритм кластеризации': 'alg',
         },

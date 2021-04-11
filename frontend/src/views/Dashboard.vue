@@ -66,15 +66,22 @@
           </v-select>
 
           <v-row justify="center">
-            <v-btn :disabled="!valid" @click="getClusteredData" class="mt-5"
-                   color="primary" dark>Get</v-btn>
+            <v-btn :disabled="!valid" @click="performClick" class="mt-5"
+                   color="primary" dark>Построить график</v-btn>
           </v-row>
 
         </v-form>
       </v-col>
 
-      <v-col cols="8">
-        <v-row justify="center">{{clusteredData}}</v-row>
+      <v-divider
+        class="ml-10"
+        vertical
+      ></v-divider>
+
+      <v-col cols="7">
+        <v-row justify="center">
+          <svg id="chartdiv" :height="chartH" :width="chartW"></svg>
+        </v-row>
       </v-col>
 
     </v-row>
@@ -83,14 +90,24 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
+import * as d3 from 'd3';
+import makeScatterPlot from '../components/mixins/charts';
+import { getKeyByValue, getAxisTitles } from '../utils';
 
 export default {
   name: 'Dashboard',
+  mixins: [makeScatterPlot],
 
   data() {
     return {
       valid: true,
-      k: 0,
+      chartW: 600,
+      chartH: 500,
+      whales: [
+        { age: 13, weight: 114 },
+        { age: 33, weight: 101 },
+        { age: 52, weight: 139 },
+      ],
 
       rules: {
         required: (value) => !!value || 'Обязательно',
@@ -105,6 +122,15 @@ export default {
 
     validate() {
       this.$refs.clusteringForm.validate();
+    },
+
+    async performClick() {
+      await this.getClusteredData();
+      d3.selectAll('svg > *').remove();
+      const title = getKeyByValue(this.datasetSection.options, this.datasetSection.selected);
+      this.makeScatterPlot('#chartdiv', this.chartW, this.chartH, this.clusteredData, 'x', 'y',
+        title,
+        getAxisTitles(title, '-'));
     },
   },
 
