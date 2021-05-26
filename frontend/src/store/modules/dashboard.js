@@ -86,7 +86,7 @@ export default {
     },
     async getClusteredData(ctx) {
       let path = `http://127.0.0.1:8000/ml/clustering/
-          ${ctx.state.sections.alg.selected}/
+          ${ctx.state.sections.alg.selected || 'kmeans'}/
           ?query=${ctx.state.sections.dataset.selected}
           &${ctx.state.sections.transformFunc.selected}`.replace(/\s+/g, '');
 

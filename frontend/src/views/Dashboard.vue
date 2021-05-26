@@ -91,23 +91,17 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 import * as d3 from 'd3';
-import makeScatterPlot from '../components/mixins/charts';
+import { makeScatterPlot, makeHistogram } from '../components/mixins/charts';
 import { getKeyByValue, getAxisTitles } from '../utils';
 
 export default {
   name: 'Dashboard',
-  mixins: [makeScatterPlot],
 
   data() {
     return {
       valid: true,
       chartW: 600,
       chartH: 500,
-      whales: [
-        { age: 13, weight: 114 },
-        { age: 33, weight: 101 },
-        { age: 52, weight: 139 },
-      ],
 
       rules: {
         required: (value) => !!value || 'Обязательно',
@@ -128,9 +122,15 @@ export default {
       await this.getClusteredData();
       d3.selectAll('svg > *').remove();
       const title = getKeyByValue(this.datasetSection.options, this.datasetSection.selected);
-      this.makeScatterPlot('#chartdiv', this.chartW, this.chartH, this.clusteredData, 'x', 'y',
-        title,
-        getAxisTitles(title, '-'));
+
+      if (this.actionSection.selected === this.actionSection.options['Отобразить распределения']) {
+        makeHistogram('#chartdiv', this.chartW, this.chartH, this.clusteredData, 'x',
+          'ad');
+      } else {
+        makeScatterPlot('#chartdiv', this.chartW, this.chartH, this.clusteredData, 'x', 'y',
+          title,
+          getAxisTitles(title, '-'));
+      }
     },
   },
 
