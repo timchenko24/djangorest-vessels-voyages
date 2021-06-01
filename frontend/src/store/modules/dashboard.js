@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getKeyByValue } from '../../utils';
 
 export default {
   state: {
@@ -14,6 +15,11 @@ export default {
           'Отобразить распределения': 'distrib',
           'Выбрать алгоритм кластеризации': 'alg',
         },
+        enabled: false,
+      },
+      feature: {
+        selected: undefined,
+        options: {},
         enabled: false,
       },
       transformFunc: {
@@ -38,13 +44,17 @@ export default {
       state.sections.dataset.options = datasets;
     },
     updateSelectedDataset(state, option) {
-      state.sections.dataset.selected = state.sections.dataset.options[option];
+      const selection = state.sections.dataset.options[option];
+      state.sections.dataset.selected = selection;
+      state.sections.feature.options = getKeyByValue(state.sections.dataset.options, selection)
+        .split('-').map((item) => item.trim());
     },
 
     updateSelectedAction(state, option) {
       state.sections.action.selected = state.sections.action.options[option];
       state.sections.transformFunc.enabled = true;
       state.sections.alg.enabled = option === 'Выбрать алгоритм кластеризации';
+      state.sections.feature.enabled = option === 'Отобразить распределения';
     },
 
     updateTransformFuncs(state, funcs) {
@@ -73,6 +83,10 @@ export default {
 
     updateClusteredData(state, data) {
       state.clusteredData = data;
+    },
+
+    updateSelectedFeature(state, feature) {
+      state.sections.feature.selected = feature;
     },
   },
 
@@ -110,6 +124,7 @@ export default {
     transformFuncSection: (state) => state.sections.transformFunc,
     algSection: (state) => state.sections.alg,
     actionSection: (state) => state.sections.action,
+    featureSection: (state) => state.sections.feature,
     linkages: (state) => state.linkages,
     clusteredData: (state) => state.clusteredData,
   },

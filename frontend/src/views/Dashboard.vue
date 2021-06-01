@@ -3,7 +3,7 @@
     <v-row class="pt-10">
 
       <v-col cols="12">
-        <p class="display-3 text-center">Dashboard</p>
+        <p class="display-3 text-center">Панель управления</p>
       </v-col>
 
     </v-row>
@@ -22,6 +22,14 @@
           <v-select label="Выберите действие" class="mt-5"
                     :items="Object.keys(actionSection.options)"
                     @change="updateSelectedAction"
+                    :rules="[rules.required]"
+          >
+          </v-select>
+
+          <v-select label="Выберите признак" class="mt-5"
+                    v-show="featureSection.enabled"
+                    :items="featureSection.options"
+                    @change="updateSelectedFeature"
                     :rules="[rules.required]"
           >
           </v-select>
@@ -112,7 +120,7 @@ export default {
   methods: {
     ...mapActions(['getData', 'getClusteredData']),
     ...mapMutations(['updateSelectedAction', 'updateSelectedTransformFunc', 'updateSelectedDataset',
-      'updateSelectedAlg', 'updateSelectedK', 'updateSelectedLinkage']),
+      'updateSelectedAlg', 'updateSelectedK', 'updateSelectedLinkage', 'updateSelectedFeature']),
 
     validate() {
       this.$refs.clusteringForm.validate();
@@ -124,8 +132,10 @@ export default {
       const title = getKeyByValue(this.datasetSection.options, this.datasetSection.selected);
 
       if (this.actionSection.selected === this.actionSection.options['Отобразить распределения']) {
-        makeHistogram('#chartdiv', this.chartW, this.chartH, this.clusteredData, 'x',
-          'ad');
+        const selectedFeature = this.featureSection.options
+          .indexOf(this.featureSection.selected) === 0 ? 'x' : 'y';
+        makeHistogram('#chartdiv', this.chartW, this.chartH, this.clusteredData, selectedFeature,
+          this.featureSection.selected);
       } else {
         makeScatterPlot('#chartdiv', this.chartW, this.chartH, this.clusteredData, 'x', 'y',
           title,
@@ -136,7 +146,7 @@ export default {
 
   computed: {
     ...mapGetters(['transformFuncSection', 'actionSection', 'datasetSection', 'algSection',
-      'clusteredData', 'linkages']),
+      'clusteredData', 'linkages', 'featureSection']),
   },
 
   async mounted() {

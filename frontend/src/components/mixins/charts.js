@@ -94,7 +94,10 @@ export function makeHistogram(id, w, h, data, attrName, xTitle) {
   chart.append('g')
     .attr('transform', `translate(0,${height})`)
     .style('font-size', '14px')
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x))
+    .selectAll('text')
+    .style('text-anchor', 'end')
+    .attr('transform', 'rotate(-25)');
 
   const histogram = d3.histogram()
     .value((d) => d[attrName])
