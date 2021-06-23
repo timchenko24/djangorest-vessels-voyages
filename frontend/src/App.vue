@@ -24,12 +24,7 @@ export default {
   name: 'App',
   components: { Footer, Header },
   data: () => ({
-    icons: [
-      'mdi-facebook',
-      'mdi-vk',
-      'mdi-linkedin',
-      'mdi-instagram',
-    ],
+
   }),
 };
 </script>

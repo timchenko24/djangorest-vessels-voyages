@@ -16,5 +16,6 @@ urlpatterns = [
 
     path('auth/obtain_token/', obtain_jwt_token),
     path('auth/refresh_token/', refresh_jwt_token),
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('ml/', include('ml.urls'))
 ]
